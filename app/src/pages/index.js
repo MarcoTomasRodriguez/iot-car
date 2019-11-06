@@ -1,104 +1,79 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { makeStyles } from '@material-ui/core'
+import ReactNipple from 'react-nipple'
 import io from 'socket.io-client'
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core'
-
-const socket = io('http://localhost:8000')
+import 'react-nipple/lib/styles.css'
 
 const useStyles = makeStyles(theme => ({
-    box: {
-        padding: theme.spacing(3),
-        margin: theme.spacing(2)
-    },
     root: {
-        height: `calc(100vh - ${theme.spacing(8)}px)`
+        height: `calc(100vh - ${theme.spacing(8)}px)`,
+        width: '100vw',
+        position: 'absolute',
+        overflow: 'hidden',
+        backgroundImage: "url('http://192.168.1.100:8081/')",
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100% 100%'
     },
-    img: {
-        width: `calc(100% - ${theme.spacing(2)}px)`,
-        marginTop: theme.spacing(2),
-        marginRight: theme.spacing(2),
-        alignSelf: 'center'
+    video: {
+        width: '100%',
+        height: '100%',
+        margin: 'auto',
+        zIndex: -1000
     }
 }))
 
-const execute = e => {
-    let key = e.key
-    let repeat = e.repeat
-    // Events that can be repeated.
-    if ([' '].includes(key)) {
-        // Space to ring the horn
-        socket.emit('horn')
-    } else if (['l', 'L'].includes(key)) {
-        // L to turn on/off the lights
-        socket.emit('lights', true)
-    }
-    // Events that cannot be repeated
-    // Prevents repeating the event while pressing a key. It only detects once.
-    if (!repeat) {
-        if (['w', 'a', 's', 'd'].includes(key)) {
-            // W A S D to move the car
-            if (key === ('w' || 'W')) key = 'up'
-            else if (key === ('d' || 'D')) key = 'right'
-            else if (key === ('s' || 's')) key = 'down'
-            else if (key === ('a' || 'A')) key = 'left'
-            socket.emit('move car', key)
-        } else if (['ArrowLeft', 'ArrowRight'].includes(key)) {
-            // <- -> to move the camera
-            if (key === 'ArrowRight') key = 'right'
-            else if (key === 'ArrowLeft') key = 'left'
-            socket.emit('move camera', key)
-        }
-    }
-
-}
-
-const CustomCard = ({ title, content }) => {
-    const classes = useStyles()
-    return (
-        <Grid item xs={12}>
-            <Paper square className={classes.box}>
-                <Typography variant='h6' align='center' style={{ fontWeight: 400 }}>
-                    {title}
-                </Typography>
-                <Typography variant='h4' align='center'>
-                    {content}
-                </Typography>
-            </Paper>
-        </Grid>
-    )
-}
+const socket = io('http://localhost:8000')
 
 export default () => {
-    const [status, setStatus] = useState({ lights: false, speed: 0, proximityForward: 0, proximityBack: 0 })
     const classes = useStyles()
 
-    useEffect(() => {
-        document.addEventListener('keydown', event => execute(event))
-        socket.addEventListener('status', status => setStatus(status))
-        return () => {
-            document.removeEventListener('keydown')
-            socket.removeEventListener('status')
+    const [lastPosition, setLastPosition] = useState(null)
+    const [lastForce, setLastForce] = useState(null)
+
+    const MAX_SPEED = 255
+    const MAX_FORCE = 1
+    const POSITIONS = Array(45).fill(0).map((_, i)=> i + 1)
+    const INVERTED_POSITIONS = POSITIONS.reverse()
+
+    const onMove = (_, { angle: { degree }, force }) => {
+        let roundedDegree = Math.round(degree / 4)
+        if (roundedDegree !== lastPosition) {
+            setLastPosition(roundedDegree)
         }
-    }, [])
+        if (force > MAX_FORCE) force = MAX_FORCE
+        if (force !== lastForce) {
+            setLastForce(force)
+        }
+    }
+
+    const move = (degrees, direction, force) => {
+        if (!degrees && direction === 'reverse') degrees = 90
+        else if (!degrees && direction === 'forward') degrees = 45
+        else if (!degrees) degrees = 22.5 // Sets to center
+
+        // Starts motors
+        if (direction === 'forward') {
+            socket.emit('motors', MAX_SPEED * force)
+        } else {
+            socket.emit('motors', MAX_SPEED * (force * -1))
+        }
+
+        socket.emit('direction', direction)
+    }
+
+    useEffect(() => {
+        if (lastPosition > 45) {
+            move(POSITIONS[lastPosition - 45], 'reverse', lastForce)
+        } else {
+            move(INVERTED_POSITIONS[lastPosition], 'forward', lastForce)
+        }
+    }, [lastPosition, lastForce])
+
 
     return (
         <div className={classes.root}>
-            <Grid container justify='center'>
-                <Grid item xs={3}>
-                    <Grid container direction='column'>
-                        <CustomCard title='Lights' content={status.lights ? 'On' : 'Off'} />
-                        <CustomCard title='Speed' content={`${status.speed} cm/s`} />
-                        <CustomCard title='Proximity (forward)' content={`${status.proximityForward} cm`} />
-                        <CustomCard title='Proximity (back)' content={`${status.proximityBack} cm`} />
-                    </Grid>
-                </Grid>
-                <Grid item xs={9}>
-                    <img 
-                        srcSet='https://www.purina.es/gato/purina-one/sites/g/files/mcldtz1856/files/2018-06/Mi_gato_no_come%20%282%29.jpg'
-                        className={classes.img}
-                        alt='Live video'
-                    />
-                </Grid>
-            </Grid>
+            <ReactNipple options={{ color: 'blue' }} className={classes.root} 
+                onMove={onMove} />
         </div>
     )
 }
