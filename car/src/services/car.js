@@ -11,8 +11,8 @@ const DIRECTION_SERVO= { pin: 'GPIO23', startAt: DIRECTION_CENTER }
 
 // 3-6V Motor w/ Gearbox
 const MOTORS = [
-    { pwm: 'GPIO12', dir: 'GPIO16', invertPWM: true }, 
-    { pwm: 'GPIO21', dir: 'GPIO20', invertPWM: true }
+    { pins: { pwm: 'GPIO12', dir: 'GPIO16' }, invertPWM: true }, 
+    { pins: { pwm: 'GPIO21', dir: 'GPIO20' }, invertPWM: true }
 ]
 
 class Car {
@@ -54,10 +54,11 @@ class Car {
 const service = async (board, socket) => {
     const car = new Car()
     board.on('ready', () => {
-        socket.on('connection', socket => {
-            socket.on('motors', speed => car.motors(speed))
-            socket.on('direction', direction => car.direction(direction))
-        })
+        socket.on('motors', speed => {
+	     console.log("motors!")
+	     car.motors(speed)
+	})
+        socket.on('direction', direction => car.direction(direction))
     })
 }
 

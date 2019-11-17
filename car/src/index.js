@@ -19,7 +19,7 @@ const modules = async () => {
     console.log(`Server: ${await status(SERVER_PORT)}.`)
 
     // Initialize the board
-    const board = new Board({ io: new RaspiIO() })
+    const board = new Board({ io: new RaspiIO(), repl: false })
 
     // Starts all the car services.
     car(board, socket)
