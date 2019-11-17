@@ -1,0 +1,21 @@
+{
+    "apps" : [
+        {
+            "name": "frontend",
+            "script": "npx",
+            "interpreter": "none",
+            "args": "serve -p 5000 -T",
+            "cwd": "./app"
+        },
+        {
+            "name": "backend",
+            "script": "./src/index.js",
+            "cwd": "./server"
+        },
+        {
+            "name": "car",
+            "script": "./src/index.js",
+            "cwd": "./car"
+        }
+    ]
+}
