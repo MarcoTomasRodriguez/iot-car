@@ -3,6 +3,7 @@ const { Board } = require('johnny-five')
 const detect = require('detect-port')
 const io = require('socket.io-client')
 const car = require('./services/car')
+const system = require('./services/system')
 
 const UI_PORT = 3000
 const SERVER_PORT = 8000
@@ -23,8 +24,8 @@ const modules = async () => {
 
     // Starts all the car services.
     car(board, socket)
+    system(socket)
     // camera(board, socket) NOT IMPLEMENTED YET!
-    // system(socket) NOT IMPLEMENTED YET!
 }
 
 modules()
