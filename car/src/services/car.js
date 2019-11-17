@@ -54,10 +54,7 @@ class Car {
 const service = async (board, socket) => {
     const car = new Car()
     board.on('ready', () => {
-        socket.on('motors', speed => {
-	     console.log("motors!")
-	     car.motors(speed)
-	})
+        socket.on('motors', speed => car.motors(speed))
         socket.on('direction', direction => car.direction(direction))
     })
 }
