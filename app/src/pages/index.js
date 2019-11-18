@@ -27,42 +27,52 @@ const socket = io('http://192.168.1.100:8000')
 export default () => {
     const classes = useStyles()
 
-    const [lastPosition, setLastPosition] = useState(22)
+    const [lastPosition, setLastPosition] = useState(1)
     const [lastForce, setLastForce] = useState(0)
 
     const MAX_SPEED = 255
-    const MAX_FORCE = 1
-    const POSITIONS = [...Array(46).keys()]
-    const INVERTED_POSITIONS = POSITIONS.reverse()
+    const MIN_MOVE = 45 / 2
+    const CENTER = 95
 
     const onMove = (_, { angle: { degree }, force }) => {
-        let roundedDegree = Math.round(degree / 4)
+        let roundedDegree = ~~(degree / 60)
+        let roundedForce = Math.round(force)
+
+        if (roundedForce > 1) roundedForce = 1 
+
         if (roundedDegree !== lastPosition) {
             setLastPosition(roundedDegree)
         }
-        if (force > MAX_FORCE) force = MAX_FORCE
-        if (force !== lastForce) {
-            setLastForce(force)
-        }
-    }
 
-    const move = (degrees, direction, force) => {
-        // Starts motors
-        if (direction === 'forward') {
-            socket.emit('motors', Math.round(MAX_SPEED * force))
-        } else {
-            socket.emit('motors', Math.round(MAX_SPEED * (force * -1)))
+        if (roundedForce !== lastForce) {
+            setLastForce(roundedForce)
         }
-
-        socket.emit('direction', degrees + 73)
     }
 
     useEffect(() => {
-        if (lastPosition > 45) {
-            move(POSITIONS[lastPosition - 45], 'reverse', lastForce)
-        } else {
-            move(INVERTED_POSITIONS[lastPosition], 'forward', lastForce)
+        let direction
+        switch(lastPosition) {
+            case 0:
+                direction = CENTER + MIN_MOVE
+                break
+            case 1:
+                direction = CENTER
+                break
+            case 2:
+                direction = CENTER - MIN_MOVE
+                break
+            case 3:
+                direction = CENTER + MIN_MOVE
+                break
+            case 4:
+                direction = CENTER
+                break
+            case 5:
+                direction = CENTER - MIN_MOVE
+                break
         }
+        socket.emit('direction', direction)
+        socket.emit('motors', lastForce * MAX_SPEED)
     }, [lastPosition, lastForce])
 
 
