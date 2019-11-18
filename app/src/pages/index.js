@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const socket = io('http://localhost:8000')
+const socket = io('http://192.168.1.100:8000')
 
 export default () => {
     const classes = useStyles()
