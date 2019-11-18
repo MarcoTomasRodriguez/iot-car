@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.3.3",
     "@material-ui/icons": "^4.4.1",
+    "local-ip": "^2.0.0",
     "lodash": "^4.17.15",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

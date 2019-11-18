@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core'
+import ip from 'local-ip'
 import ReactNipple from 'react-nipple'
 import io from 'socket.io-client'
 import 'react-nipple/lib/styles.css'
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const socket = io('http://192.168.1.100:8000')
+const socket = io(`http://${ip('wlan0')}:8000`)
 
 export default () => {
     const classes = useStyles()
@@ -62,13 +63,13 @@ export default () => {
                 direction = CENTER - MIN_MOVE
                 break
             case 3:
-                direction = CENTER + MIN_MOVE
+                direction = CENTER - MIN_MOVE
                 break
             case 4:
                 direction = CENTER
                 break
             case 5:
-                direction = CENTER - MIN_MOVE
+                direction = CENTER + MIN_MOVE
                 break
         }
         socket.emit('direction', direction)
