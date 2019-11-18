@@ -24,9 +24,10 @@ class Car {
     motors(speed) {
         if (speed > MAXIMUM_MOTORS_SPEED) speed = MAXIMUM_MOTORS_SPEED
         else if (speed < MAXIMUM_MOTORS_SPEED * -1) speed = MAXIMUM_MOTORS_SPEED * -1
-        switch (Math.sign(speed)) {
+        console.log(speed, Math.sign(speed))
+	switch (Math.sign(speed)) {
             case -1:
-                this._motors.forward(speed * -1)
+                this._motors.rev(speed * -1)
             case -0:
                 this._motors.stop()
                 break
@@ -34,7 +35,7 @@ class Car {
                 this._motors.stop()
                 break
             case 1:
-                this._motors.start(speed)
+                this._motors.fwd(speed)
                 break
             default:
                 break
