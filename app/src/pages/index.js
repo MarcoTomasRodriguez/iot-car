@@ -27,12 +27,12 @@ const socket = io('http://localhost:8000')
 export default () => {
     const classes = useStyles()
 
-    const [lastPosition, setLastPosition] = useState(null)
-    const [lastForce, setLastForce] = useState(null)
+    const [lastPosition, setLastPosition] = useState(22)
+    const [lastForce, setLastForce] = useState(0)
 
     const MAX_SPEED = 255
     const MAX_FORCE = 1
-    const POSITIONS = Array(45).fill(0).map((_, i)=> i + 1)
+    const POSITIONS = [...Array(46).keys()]
     const INVERTED_POSITIONS = POSITIONS.reverse()
 
     const onMove = (_, { angle: { degree }, force }) => {
@@ -47,18 +47,14 @@ export default () => {
     }
 
     const move = (degrees, direction, force) => {
-        if (!degrees && direction === 'reverse') degrees = 90
-        else if (!degrees && direction === 'forward') degrees = 45
-        else if (!degrees) degrees = 22.5 // Sets to center
-
         // Starts motors
         if (direction === 'forward') {
-            socket.emit('motors', MAX_SPEED * force)
+            socket.emit('motors', Math.round(MAX_SPEED * force))
         } else {
-            socket.emit('motors', MAX_SPEED * (force * -1))
+            socket.emit('motors', Math.round(MAX_SPEED * (force * -1)))
         }
 
-        socket.emit('direction', direction)
+        socket.emit('direction', degrees + 73)
     }
 
     useEffect(() => {
