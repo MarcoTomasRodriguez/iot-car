@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core'
-import ip from 'local-ip'
 import ReactNipple from 'react-nipple'
 import io from 'socket.io-client'
 import 'react-nipple/lib/styles.css'
@@ -11,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         width: '100vw',
         position: 'absolute',
         overflow: 'hidden',
-        backgroundImage: "url('http://192.168.1.100:8081/')",
+        backgroundImage: "url('http://192.168.43.54:8081/')",
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100% 100%'
     },
@@ -23,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const socket = io(`http://${ip('wlan0')}:8000`)
+const socket = io(`http://192.168.43.54:8000`)
 
 export default () => {
     const classes = useStyles()
