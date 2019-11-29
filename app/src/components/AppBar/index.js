@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, IconButton, makeStyles } from '@material-u
 import { PowerSettingsNew, Loop } from '@material-ui/icons'
 import io from 'socket.io-client'
 
-const socket = io(`http://192.168.43.54:8000`)
+const socket = io(`http://${window.location.hostname}:8000`)
 
 const useStyles = makeStyles(theme => ({
 	iconButton: {

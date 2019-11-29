@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
         width: '100vw',
         position: 'absolute',
         overflow: 'hidden',
-        backgroundImage: "url('http://192.168.43.54:8081/')",
+        backgroundImage: `url('http://${window.location.hostname}:8081/')`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100% 100%'
     },
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const socket = io(`http://192.168.43.54:8000`)
+const socket = io(`http://${window.location.hostname}:8000`)
 
 export default () => {
     const classes = useStyles()

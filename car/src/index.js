@@ -8,7 +8,7 @@ const system = require('./services/system')
 const UI_PORT = 3000
 const SERVER_PORT = 8000
 
-const socket = io('http://192.168.43.54:8000')
+const socket = io(`http://${window.location.hostname}:8000`)
 
 const status = async port => await detect(port) !== port ? 'running' : 'not running'
 
@@ -25,7 +25,6 @@ const modules = async () => {
     // Starts all the car services.
     car(board, socket)
     system(socket)
-    // camera(board, socket) NOT IMPLEMENTED YET!
 }
 
 modules()

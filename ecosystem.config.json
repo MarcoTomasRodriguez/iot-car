@@ -4,7 +4,7 @@
             "name": "frontend",
             "script": "npx",
             "interpreter": "none",
-            "args": "serve -p 5000 -s build",
+            "args": "serve -p 80 -s build",
             "cwd": "./app"
         },
         {
