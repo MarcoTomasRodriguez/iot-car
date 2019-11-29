@@ -2,9 +2,8 @@ import React from 'react'
 import { AppBar, Toolbar, Typography, IconButton, makeStyles } from '@material-ui/core'
 import { PowerSettingsNew, Loop } from '@material-ui/icons'
 import io from 'socket.io-client'
-import ip from 'local-ip'
 
-const socket = io(`http://${ip('wlan0')}:8000`)
+const socket = io(`http://192.168.43.54:8000`)
 
 const useStyles = makeStyles(theme => ({
 	iconButton: {

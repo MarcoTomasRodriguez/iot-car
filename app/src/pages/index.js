@@ -72,7 +72,11 @@ export default () => {
                 break
         }
         socket.emit('direction', direction)
-        socket.emit('motors', lastForce * MAX_SPEED)
+	if (lastPosition > 2) {
+	    socket.emit('motors', (lastForce * MAX_SPEED) * -1)
+	} else {
+            socket.emit('motors', lastForce * MAX_SPEED)
+	}
     }, [lastPosition, lastForce])
 
 
