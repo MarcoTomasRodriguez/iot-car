@@ -1,6 +1,6 @@
 import React from 'react'
 import { AppBar, Toolbar, Typography, IconButton, makeStyles } from '@material-ui/core'
-import { PowerSettingsNew, Loop } from '@material-ui/icons'
+import { PowerSettingsNew, Loop, Brightness3 } from '@material-ui/icons'
 import io from 'socket.io-client'
 
 const socket = io(`http://${window.location.hostname}:8000`)
@@ -15,12 +15,16 @@ export default () => {
     const classes = useStyles()
     const shutdown = () => socket.emit('shutdown')
     const reboot = () => socket.emit('reboot')
+    const sleep = () => socket.emit('sleep')
     return (
         <AppBar position='relative'>
             <Toolbar>
                 <Typography variant="h6" style={{ flexGrow: 1 }}>
                     IoT Car
                 </Typography>
+                <IconButton edge='start' color='inherit' className={classes.iconButton} onClick={sleep}>
+                    <Brightness3 />
+                </IconButton>
                 <IconButton edge='start' color='inherit' className={classes.iconButton} onClick={reboot}>
                     <Loop />
                 </IconButton>

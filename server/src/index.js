@@ -10,6 +10,7 @@ io.on('connection', socket => {
     socket.on('lights', status => io.emit('lights', status))
     socket.on('shutdown', () => io.emit('shutdown'))
     socket.on('reboot', () => io.emit('reboot'))
+    socket.on('sleep', () => io.emit('sleep'))
 })
 
 server.listen(PORT, () => console.log(`Socket.IO Server running on port: ${PORT}`))
