@@ -1,0 +1,16 @@
+[Unit]
+Description=IoT-Car client service
+After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=10
+StartLimitAction=reboot
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=${user}
+ExecStart=/usr/bin/env serve -p 80 -s ${dir}/build
+
+[Install]
+WantedBy=multi-user.target

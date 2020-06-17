@@ -1,0 +1,16 @@
+[Unit]
+Description=IoT-Car driver service
+After=network.target
+StartLimitBurst=5
+StartLimitIntervalSec=10
+StartLimitAction=reboot
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=${user}
+ExecStart=/usr/bin/env npm start --prefix ${dir}
+
+[Install]
+WantedBy=multi-user.target
