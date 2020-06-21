@@ -1,6 +1,6 @@
 {
   "name": "driver",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "WS Endpoint that translates the abstract actions into functionality",
   "main": "src/index.ts",
   "scripts": {
